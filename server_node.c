@@ -155,7 +155,7 @@ int main(int argc, char** argv)
    free(hosts);
    
    signal(SIGALRM, stop);
-   alarm(5);
+   alarm(10);
    pcap_loop(handle, -1, trap, NULL);
 
    send(cfd, &result_count, sizeof(int), 0);
