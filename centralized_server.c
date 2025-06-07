@@ -1,10 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/ioctl.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <net/if.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #define MAX_NODES 10
 #define PORT 1235
@@ -25,6 +29,17 @@ struct localnet_t
    uint32_t mask;
    uint32_t network;
    uint32_t broadcast;
+};
+
+struct thread_args_t
+{
+    char* node_ip;
+    char** hosts;
+    int hosts_per_node;
+    int rest;
+    int node_index;
+    int total_nodes;
+    int total_hosts;
 };
 
 struct args_t parse_args(int argc, char** argv)
@@ -120,7 +135,9 @@ struct localnet_t get_localnet_info(char* interface)
 
     ret.network = ret.local_ip & ret.mask;
     ret.broadcast = ret.local_ip | ~ret.mask;
-
+    
+    close(sock);
+    
     return ret;
 }
 
@@ -155,6 +172,51 @@ void find_local_hosts(struct localnet_t* loc_net, char*** hosts_array, int* size
     }
 }
 
+void* handle_node(void* args)
+{
+    struct thread_args_t* targs = (struct thread_args_t*)args;
+
+    int sfd = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in naddr;
+    naddr.sin_family = AF_INET;
+    naddr.sin_port = htons(PORT); // IF NOT ON LOCAL HOST REMOVE + i
+    inet_pton(AF_INET, targs->node_ip, &naddr.sin_addr);
+
+    if(connect(sfd, (struct sockaddr*) &naddr, sizeof(naddr)) < 0)
+    {
+        perror("Connection Error");
+        free(args);
+        close(sfd);
+        pthread_exit(NULL);
+    }
+
+    int actual_hosts = targs->hosts_per_node;
+    if(targs->node_index == targs->total_nodes - 1 && targs->rest != 0)
+    {
+        actual_hosts += targs->rest;
+    }
+
+    send(sfd, &actual_hosts, sizeof(int), 0);
+    for(int i = 0; i < actual_hosts; i++)
+    {
+        int index = (targs->hosts_per_node * targs->node_index) + i;
+        send(sfd, targs->hosts[index], INET_ADDRSTRLEN, 0);
+    }
+
+    int result_count;
+    recv(sfd, &result_count, sizeof(int), 0);
+    for (int i = 0; i < result_count; i++) {
+        char result[RESULT_BUF_SIZE];
+        memset(result, 0, sizeof(result));
+        recv(sfd, result, sizeof(result), 0);
+        printf("%s\n", result);
+    }
+    
+    close(sfd);
+    free(targs);
+    pthread_exit(NULL);
+}
+
 int main(int argc, char** argv)
 {
    struct args_t parsed_args = parse_args(argc, argv);
@@ -167,37 +229,23 @@ int main(int argc, char** argv)
         int hosts_per_node = size / parsed_args.num_nodes;
         int rest = size % parsed_args.num_nodes;
 
+        pthread_t threads[MAX_NODES];
         for(int i = 0; i < parsed_args.num_nodes; i++)
         {
-            int sfd = socket(AF_INET, SOCK_STREAM, 0);
-            struct sockaddr_in naddr;
+            struct thread_args_t* targs = malloc(sizeof(struct thread_args_t));
+            targs->node_ip = parsed_args.nodes[i];
+            targs->hosts = hosts;
+            targs->hosts_per_node = hosts_per_node;
+            targs->rest = rest;
+            targs->node_index = i;
+            targs->total_nodes = parsed_args.num_nodes;
+            targs->total_hosts = size;
 
-            naddr.sin_family = AF_INET;
-            naddr.sin_port = htons(PORT); // IF NOT ON LOCAL HOST REMOVE + i
-            inet_pton(AF_INET, parsed_args.nodes[i], &naddr.sin_addr);
-
-            if(connect(sfd, (struct sockaddr*) &naddr, sizeof(naddr)) < 0)
-            {
-                perror("Connection Error");
-                exit(0);
-            }
-
-            if(i == parsed_args.num_nodes - 1 && rest != 0){ hosts_per_node += rest; }
-            send(sfd, &hosts_per_node, sizeof(int), 0);
-            for(int j = 0; j < hosts_per_node; j++)
-            {
-                int index = (hosts_per_node * i) + j;
-                send(sfd, hosts[index], INET_ADDRSTRLEN, 0);
-            }
-
-            int result_count;
-            recv(sfd, &result_count, sizeof(int), 0);
-            for (int i = 0; i < result_count; i++) {
-                char result[RESULT_BUF_SIZE];
-                memset(result, 0, sizeof(result));
-                recv(sfd, result, sizeof(result), 0);
-                printf("%s\n", result);
-            }
+            pthread_create(&threads[i], NULL, handle_node, targs);
+        }
+        for(int i = 0; i < parsed_args.num_nodes; i++)
+        {
+            pthread_join(threads[i], NULL);
         }
         for(int i = 0; i < size; i++)
         {
