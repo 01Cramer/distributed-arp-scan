@@ -1,23 +1,27 @@
-# Wersja rozproszona narzędzia arp-scan
+# Distributed Version of the arp-scan Tool
+# Project Description
+The architecture of the solution is based on a centralized server that identifies hosts available on the local network, then distributes IP address ranges to selected processing servers (referred to as nodes). Each node is responsible for performing an ARP scan only for its assigned range and sending the results back to the central server, which aggregates the collected information.
 
-# Opis projektu
-Architektura rozwiązania oparta jest na scentralizowanym serwerze, który identyfikuje hosty dostępne w sieci lokalnej, a następnie rozdziela zakresy adresów IP do wybranych serwerów przetwarzających (tzw. node’ów). Każdy z node’ów odpowiada za wykonanie skanowania ARP wyłącznie dla przydzielonego zakresu oraz przesłanie wyników z powrotem do serwera centralnego, który agreguje zebrane informacje.
+Thanks to parallel scanning performed by multiple nodes, the time required to scan the entire network is significantly reduced, which can be especially useful in large network environments.
 
-Dzięki równoległemu wykonywaniu skanowania przez wiele node’ów, czas potrzebny na pełne przeskanowanie sieci zostaje istotnie skrócony, co może być szczególnie przydatne w przypadku dużych środowisk sieciowych.
+# Source Files and Compilation
+The project consists of two source files:
 
-# Zawartość plików źródłowych i kompilacja
-Projekt składa się z dwóch plików źródłowych:
--  centralized_server.c zawiera kod źródłowy serwera centralnego.
--  server_node.c zawiera kod źródłowy node'a wykonującego skanowanie.
+centralized_server.c: contains the source code of the central server.
 
-Przygotowany został plik Makefile, który pozwoli skompilować oba pliki źródłowe:
--  polecenie: make arpscan, w przypadku kompilacji serwera centralnego.
--  polecenie: make node, w przypadku kompilacji node'a (wymagana jest wcześniejsza instalacja bibliotek libnet oraz libpcap).
+server_node.c: contains the source code of the node that performs scanning.
 
-# Sposób uruchomienia
+A Makefile is provided to compile both source files:
 
-Aby wykonać rozproszony arp-scan niezbędne będzie wcześniejsze przygotowanie poszczególnych node'ow. Skompilowany program node'a uruchamia się poleceniem: ./node INTERFEJS
+Use the command make arpscan to compile the central server.
 
-Po uruchomieniu node'ow, można uruchomić serwer centralny: ./arpscan -i INTERFEJS -l -n ADRES IP NODE'A 1 -n ADRES IP NODE'A 2
+Use the command make node to compile the node (requires prior installation of the libnet and libpcap libraries).
 
-(Możliwe wskazanie kilku node'ow - dodatkowe przełączniki -n)
+# How to Run
+To perform a distributed arp-scan, you must first prepare the individual nodes. The compiled node program is run using the command:
+
+./node INTERFACE
+After starting the nodes, you can start the central server:
+
+./arpscan -i INTERFACE -l -n NODE_IP_1 -n NODE_IP_2
+(Multiple nodes can be specified using additional -n switches.)
