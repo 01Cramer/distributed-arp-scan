@@ -1,4 +1,4 @@
-# distributed version of the arp-scan tool
+# distributed arp-scan
 # Project Description
 The architecture of the solution is based on a centralized server that identifies hosts available on the local network, then distributes IP address ranges to selected processing servers (referred to as nodes). Each node is responsible for performing an ARP scan only for its assigned range and sending the results back to the central server, which aggregates the collected information.
 
@@ -13,7 +13,7 @@ server_node.c: contains the source code of the node that performs scanning.
 
 A Makefile is provided to compile both source files:
 
-Use the command make arpscan to compile the central server.
+Use the command <mark>make arpscan</mark> to compile the central server.
 
 Use the command make node to compile the node (requires prior installation of the libnet and libpcap libraries).
 
