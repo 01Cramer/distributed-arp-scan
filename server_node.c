@@ -61,6 +61,10 @@ void send_arp_req(char* target_ip)
 
 void add_result(const char* entry)
 {
+   for(int i = 0; i < result_count; i++)
+   {
+      if(strcmp(results[i], entry) == 0){ return ;}
+   }
    if(result_count == result_capacity)
    {
       result_capacity = result_capacity == 0 ? 16 : result_capacity * 2;
@@ -100,9 +104,9 @@ void trap(u_char *user, const struct pcap_pkthdr *h, const u_char *bytes)
    {
       char buf[RESULT_BUF_SIZE];
       snprintf(buf, sizeof(buf), "%d.%d.%d.%d %02x:%02x:%02x:%02x:%02x:%02x",
-          arp->sender_ip_addr[0], arp->sender_ip_addr[1], arp->sender_ip_addr[2], arp->sender_ip_addr[3],
-          arp->sender_mac_addr[0], arp->sender_mac_addr[1], arp->sender_mac_addr[2],
-          arp->sender_mac_addr[3], arp->sender_mac_addr[4], arp->sender_mac_addr[5]);
+         arp->sender_ip_addr[0], arp->sender_ip_addr[1], arp->sender_ip_addr[2], arp->sender_ip_addr[3],
+         arp->sender_mac_addr[0], arp->sender_mac_addr[1], arp->sender_mac_addr[2],
+         arp->sender_mac_addr[3], arp->sender_mac_addr[4], arp->sender_mac_addr[5]);
       
       add_result(buf);
    }
