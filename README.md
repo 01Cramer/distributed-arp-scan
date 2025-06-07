@@ -15,13 +15,13 @@ A Makefile is provided to compile both source files:
 
 Use the command <code>make arpscan</code> to compile the central server.
 
-Use the command make node to compile the node (requires prior installation of the libnet and libpcap libraries).
+Use the command <code>make node</code> to compile the node (requires prior installation of the libnet and libpcap libraries).
 
 # How to Run
 To perform a distributed arp-scan, you must first prepare the individual nodes. The compiled node program is run using the command:
 
-./node INTERFACE
+<code>./node INTERFACE</code>
 After starting the nodes, you can start the central server:
 
-./arpscan -i INTERFACE -l -n NODE_IP_1 -n NODE_IP_2
+<code>./arpscan -i INTERFACE -l -n NODE_IP_1 -n NODE_IP_2</code>
 (Multiple nodes can be specified using additional -n switches.)
