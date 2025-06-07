@@ -16,6 +16,6 @@ Przygotowany został plik Makefile, który pozwoli skompilować oba pliki źród
 
 # Sposób uruchomienia
 
-Aby wykonać rozproszony arp-scan niezbędne będzie wcześniejsze przygotowanie poszczególnych node'ow. Skompilowany program node'a uruchamia się poleceniem ./node <INTERFEJS>.
+Aby wykonać rozproszony arp-scan niezbędne będzie wcześniejsze przygotowanie poszczególnych node'ow. Skompilowany program node'a uruchamia się poleceniem: ./node <INTERFEJS>.
 
 Po uruchomieniu node'ow, można uruchomić serwer centralny: ./arpscan -i <INTERFEJS> -l -n <ADRES IP NODE'A 1> -n <ADRES IP NODE'A 2> ...
