@@ -11,11 +11,11 @@ Projekt składa się z dwóch plików źródłowych:
 -  server_node.c zawiera kod źródłowy node'a wykonującego skanowanie.
 
 Przygotowany został plik Makefile, który pozwoli skompilować oba pliki źródłowe:
--  polecenie make arpscan w przypadku kompilacji serwera centralnego
--  polecenie make node w przypadku kompilacji node'a (wymagana jest wcześniejsza instalacja bibliotek libnet oraz libpcap)
+-  polecenie: make arpscan, w przypadku kompilacji serwera centralnego
+-  polecenie: make node, w przypadku kompilacji node'a (wymagana jest wcześniejsza instalacja bibliotek libnet oraz libpcap)
 
 # Sposób uruchomienia
 
 Aby wykonać rozproszony arp-scan niezbędne będzie wcześniejsze przygotowanie poszczególnych node'ow. Skompilowany program node'a uruchamia się poleceniem ./node <INTERFEJS>.
 
-Po uruchomieniu node'ow, można uruchomić serwer centralny: polecenie ./arpscan -i <INTERFEJS> -l -n <ADRES IP NODE'A 1> -n <ADRES IP NODE'A 2> ... -n <ADRES IP NODE'A N> (możliwe jest wskazanie kilku node'ow).
+Po uruchomieniu node'ow, można uruchomić serwer centralny: ./arpscan -i <INTERFEJS> -l -n <ADRES IP NODE'A 1> -n <ADRES IP NODE'A 2> ...
