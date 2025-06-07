@@ -10,7 +10,7 @@ Projekt składa się z dwóch plików źródłowych:
 -  centralized_server.c zawiera kod źródłowy serwera centralnego.
 -  server_node.c zawiera kod źródłowy node'a wykonującego skanowanie.
 
-Przygotowany został również plik Makefile, który pozwoli skompilować oba pliki źródłowe:
+Przygotowany został plik Makefile, który pozwoli skompilować oba pliki źródłowe:
 -  polecenie make arpscan w przypadku kompilacji serwera centralnego
 -  polecenie make node w przypadku kompilacji node'a (wymagana jest wcześniejsza instalacja bibliotek libnet oraz libpcap)
 
