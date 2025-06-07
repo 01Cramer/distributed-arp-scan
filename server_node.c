@@ -121,7 +121,7 @@ int main(int argc, char** argv)
    signal(SIGINT, stop);
    errbuf = malloc(PCAP_ERRBUF_SIZE);
    handle = pcap_create(argv[1], errbuf);
-   pcap_set_promisc(handle, 1);
+   pcap_set_promisc(handle, 0);
    pcap_set_snaplen(handle, 65535);
    pcap_set_timeout(handle, 1000);
    pcap_activate(handle);
