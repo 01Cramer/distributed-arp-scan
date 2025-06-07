@@ -1,4 +1,4 @@
-# Distributed Version of the arp-scan Tool
+# distributed version of the arp-scan tool
 # Project Description
 The architecture of the solution is based on a centralized server that identifies hosts available on the local network, then distributes IP address ranges to selected processing servers (referred to as nodes). Each node is responsible for performing an ARP scan only for its assigned range and sending the results back to the central server, which aggregates the collected information.
 
