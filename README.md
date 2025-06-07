@@ -13,7 +13,7 @@ server_node.c: contains the source code of the node that performs scanning.
 
 A Makefile is provided to compile both source files:
 
-Use the command <mark>make arpscan</mark> to compile the central server.
+Use the command <code>make arpscan</code> to compile the central server.
 
 Use the command make node to compile the node (requires prior installation of the libnet and libpcap libraries).
 
