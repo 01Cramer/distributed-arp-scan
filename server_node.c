@@ -65,15 +65,15 @@ void add_result(const char* entry)
    {
       result_capacity = result_capacity == 0 ? 16 : result_capacity * 2;
       results = realloc(results, result_capacity * sizeof(char*));
-      if (!results)
+      if(!results)
       {
-          perror("realloc");
-          exit(EXIT_FAILURE);
+         perror("realloc");
+         exit(EXIT_FAILURE);
       }
    }
 
    results[result_count] = strdup(entry);
-   if (!results[result_count])
+   if(!results[result_count])
    {
       perror("strdup");
       exit(EXIT_FAILURE);

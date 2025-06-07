@@ -53,13 +53,13 @@ struct args_t parse_args(int argc, char** argv)
 
     while (argc > 0)
     {
-        if ((*argv)[0] == '-')
+        if((*argv)[0] == '-')
         {
-            if (strcmp(*argv, "--interface") == 0 || strcmp(*argv, "-i") == 0)
+            if(strcmp(*argv, "--interface") == 0 || strcmp(*argv, "-i") == 0)
             {
                 argv++;
                 argc--;
-                if (argc > 0)
+                if(argc > 0)
                 {
                     ret.interface = *argv;
                 }
@@ -69,11 +69,11 @@ struct args_t parse_args(int argc, char** argv)
                     exit(0);
                 }
             }
-            else if (strcmp(*argv, "--localnet") == 0 || strcmp(*argv, "-l") == 0)
+            else if(strcmp(*argv, "--localnet") == 0 || strcmp(*argv, "-l") == 0)
             {
                 ret.target_type = "localnet";
             }
-            else if (strcmp(*argv, "--node") == 0 || strcmp(*argv, "-n") == 0)
+            else if(strcmp(*argv, "--node") == 0 || strcmp(*argv, "-n") == 0)
             {
                 argv++;
                 argc--;
@@ -179,7 +179,7 @@ void* handle_node(void* args)
     int sfd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in naddr;
     naddr.sin_family = AF_INET;
-    naddr.sin_port = htons(PORT); // IF NOT ON LOCAL HOST REMOVE + i
+    naddr.sin_port = htons(PORT);
     inet_pton(AF_INET, targs->node_ip, &naddr.sin_addr);
 
     if(connect(sfd, (struct sockaddr*) &naddr, sizeof(naddr)) < 0)
